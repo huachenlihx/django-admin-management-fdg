@@ -1,24 +1,35 @@
-# Version 1.0.0 validation
+# Validation (version 1.0.1)
 
-The maintainer reports testing the whole project and requested promotion to 1.0.0. Detailed local test logs and a compatibility matrix were not supplied.
+This file records what has actually been run against this release, and what has not.
 
-## Independently verified
+## Verified
 
-- Python 3.13.5 / Django 5.2.19: all 15 bundled tests passed, including permissions, CSRF, CRUD, object scope, navigation, custom AdminSite and audit logging. Django and its pure-Python dependencies were recovered from the uploaded virtual environment for these checks; the virtual environment is not shipped.
-- Django system checks, migration consistency, static collection, Python syntax and JavaScript syntax checks passed.
-- Both distributions built successfully; all 15 tests also passed using the installed 1.0.0 wheel in an isolated target directory. Wheel metadata, six HTML templates, three static assets, source documentation and four illustrations were verified.
-- Release metadata, documentation and packaging reviewed; runtime source preserved apart from the version constant.
+Review date: 2026-11-24. Environment: Python 3.12.3 on Linux.
 
-## Remaining checks
+| Check | Result |
+| --- | --- |
+| Bundled test suite (15 tests) on Django 5.2.19 | Pass |
+| Bundled test suite (15 tests) on Django 6.0.10 | Pass |
+| Bundled test suite (15 tests) on Django 6.1.3 | Pass |
+| `manage.py check` | No issues |
+| `makemigrations --check --dry-run` | No changes detected |
+| `collectstatic` | Pass |
+| JavaScript syntax check (`api.js`, `confirm.js`, Node 22, ES modules) | Pass |
+| `python -m build` (sdist and wheel) | Pass |
+| `twine check` on both distributions | Pass |
+| Wheel contents | 6 templates, 3 static files, template tag module present |
 
-- Django 6.0, 6.1 and the full Python/Django CI matrix were not independently executed.
-- Browser testing, third-party branding compatibility and the three production-app staging integrations were not independently reproduced.
-- Twine is not available in the review environment; run `python -m twine check dist/*` locally before upload. The GitHub publishing workflow also runs tests and Twine checks.
-- The actual repository URL was not supplied; README documentation links remain relative and may not work in the PyPI rendering. Use absolute repository links when known.
+The tests cover permissions, CSRF, CRUD endpoints, object scope, navigation, custom AdminSite instances, confirmation attributes and audit logging. Extra manual probes confirmed that view-only staff are refused on write endpoints, that non-staff users are redirected to login, that HEAD requests work on pages, and that button labels are HTML-escaped.
 
-The package does not replace application-specific authorization, input validation or business logic. Existing named URLs must independently enforce security. No upload to PyPI or TestPyPI has been performed.
+## Not yet verified
 
-## Dependency update review
+- Python 3.10, 3.13 and 3.14. The GitHub Actions matrix in `.github/workflows/tests.yml` covers them; record its result here once it has run.
+- Browser behavior (clicks, `fetch` calls, confirmation dialogs, the CSS layout).
+- Third-party admin themes (Jazzmin, Grappelli, Unfold and similar).
+- Large datasets, concurrency and performance.
 
-The package now declares `Django>=5.2` with no upper limit and `requires-python = ">=3.10"`. All 15 source tests passed again on Python 3.13.5 / Django 5.2.19; system checks and migration consistency passed. Django 6.1.3 could not be installed from the available package index in the review environment; compatibility remains unverified. CI now includes a Django 6.1 matrix entry.
-- Rebuilt wheel and source distribution, both declaring the new dependency. All 15 tests passed against the rebuilt installed wheel; its import location and metadata were checked. Static collection, Python/JavaScript syntax and packaged asset checks passed again.
+## Scope and limits
+
+The package does not replace application-specific authorization, input validation, rate limiting or business rules. Pages added with `url_name` point at existing views, and those views must enforce their own security. Audit logging records completed endpoint responses only and is not a compliance trail.
+
+Django is declared as `Django>=5.2` with no upper bound, so versions newer than those listed above are allowed by the installer but not certified.

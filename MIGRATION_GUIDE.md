@@ -1,55 +1,134 @@
-# Migration notes: United Supermarket Adelaide
+# Migration guide
 
-This is a generic new library, not a modification of the production apps. Keep existing business logic and URL protections. Test in staging first.
+This guide explains how to move an existing Django Admin customization (a hand-written button, a hardcoded URL, a custom page) onto `django-admin-management-fdg`. Migrate one ModelAdmin at a time, and test in staging first.
 
-## Flyer Manifest
+## Choose a migration level
 
-`FlyerFileAdmin` currently sets `change_list_template`, injects `upload_page_url` via `changelist_view`, and uses a hardcoded `/flyer-manifest/upload-page/`. Replace just the button wiring with:
+| Level | What you keep | What you change | Risk |
+| --- | --- | --- | --- |
+| 1. Button only | Existing views, URLs and templates | Replace the custom button wiring with `ManagementPage(url_name=...)` | Lowest |
+| 2. Managed page | Existing business logic | Serve the page through the package (`template_name=` or `view=`) | Medium |
+| 3. Managed page and endpoints | Business logic only | Move AJAX or POST routes into `ManagementEndpoint` | Highest |
+
+Start at level 1. Move up only when you want the package to handle permissions, CSRF, navigation and audit logging for you.
+
+## Level 1: replace only the button
+
+Before, a typical ModelAdmin overrides `change_list_template` and injects a hardcoded URL:
 
 ```python
-class FlyerFileAdmin(ManagementAdminMixin, admin.ModelAdmin):
+@admin.register(Report)
+class ReportAdmin(admin.ModelAdmin):
+    change_list_template = "reports/change_list.html"
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context["upload_page_url"] = "/reports/upload-page/"
+        return super().changelist_view(request, extra_context=extra_context)
+```
+
+After, put the mixin first and declare the button:
+
+```python
+from django_admin_management_fdg import ManagementAdminMixin, ManagementPage
+
+@admin.register(Report)
+class ReportAdmin(ManagementAdminMixin, admin.ModelAdmin):
     management_pages = (
-        ManagementPage(name="staff_upload", label="Staff Upload Page", icon="🖼️",
-                       url_name="flyer_upload_page",
-                       permission="flyer_manifest.can_upload_flyer"),
+        ManagementPage(
+            name="upload",
+            label="Upload Page",
+            icon="🖼️",
+            url_name="reports_upload_page",      # your existing named URL
+            permission="reports.can_upload",
+        ),
     )
-    # Keep existing list_display, filters, fields and other methods.
 ```
 
-Remove old button-specific template override/context/CSS only after checking it has no other responsibilities. Existing named routes and upload/edit/reorder/cron views stay intact. If the root project namespaces this URLconf, use the actual qualified URL name. Preserve the separate `flyer_manifest.can_run_flyer_manifest_cron` check and independently verify staff-only access on existing routes.
+Then:
 
-## Site Notifications
+1. Add `"django_admin_management_fdg"` to `INSTALLED_APPS`.
+2. Remove the old `change_list_template`, the context injection and any button-only CSS, but only after checking they have no other job.
+3. If you still need your own changelist template, keep it and set `management_changelist_base = "reports/change_list.html"` (and `management_changeform_base` for the change form) so the package extends your template.
 
-`SiteNotificationAdmin` currently injects `manage_page_url` using `/site-notifications/manage/`. Configure:
+Important points for `url_name` pages:
+
+- They are model-scope only. `scope="object"` with `url_name` is rejected.
+- The package only shows or hides the button. **Your existing view must still enforce its own access checks.**
+- The name is resolved with `reverse()`. If your URLconf is namespaced, use the qualified name, for example `"admin:reports_report_upload"`. That form assumes the default AdminSite.
+- `audit=True` is not allowed with `url_name`; the existing view is responsible for its own audit logging.
+
+## Level 2: let the package serve the page
+
+Use a template that extends the package base:
 
 ```python
-management_pages = (
-    ManagementPage(name="notifications", label="Manage Notifications", icon="🔔",
-                   url_name="notifications_manage",
-                   permission="site_notifications.can_manage_notifications"),
+ManagementPage(name="reports", label="Reports",
+               template_name="reports/dashboard.html",
+               permission="reports.view_report")
+```
+
+```django
+{% extends "django_admin_management_fdg/base.html" %}
+{% block management_content %}
+  <h1>Reports</h1>
+{% endblock %}
+```
+
+Or use a callable or class-based view. The package injects admin context as `request.fdg_management_context`, and merges it into any unrendered `TemplateResponse`:
+
+```python
+ManagementPage(name="reports", label="Reports", view=ReportDashboardView.as_view())
+```
+
+## Level 3: move endpoints into the page
+
+If your page makes POST, PATCH or DELETE calls, declare them as endpoints:
+
+```python
+ManagementPage(
+    name="manage", label="Manage", view=views.manage, permission="reports.view_report",
+    audit=True,
+    endpoints=(
+        ManagementEndpoint("create/", "create", views.create, permission="reports.add_report"),
+        ManagementEndpoint("delete/<int:pk>/", "delete", views.delete,
+                           methods=("DELETE",), permission="reports.delete_report"),
+    ),
 )
 ```
 
-Add the mixin before ModelAdmin. Keep the existing `save_model`, role display, date/time logic and all existing API and cron permission checks. The named URL approach preserves the existing page design and current AJAX URLs; add navigation to that template yourself or migrate it to an internal page later.
+In templates, resolve the generated URLs with the tag:
 
-## Jobs
-
-`JobPostAdmin` currently registers `manage/`, `manage/create/`, `manage/edit/<uuid:pk>/`, `manage/delete/<uuid:pk>/`, and `manage/run-cron/` in `get_urls()`. It also has app-level aliases in `job.urls`. For the lowest-risk initial migration retain its existing `get_urls` and views, remove the old button wiring and add:
-
-```python
-management_pages = (
-    ManagementPage(name="jobs", label="Manage Jobs", icon="💼",
-                   url_name="admin:job_jobpost_manage",
-                   permission="job.can_upload_job"),
-)
+```django
+{% load management_tags %}
+{% management_endpoint_url 'delete' pk=item.pk %}
 ```
 
-This assumes the default AdminSite namespace. Preserve existing protection and `job.can_run_job_cron`. For a later full migration use `view=JobManagePageView.as_view()` and `ManagementEndpoint` for the create/edit/delete/run-cron views. Update all existing template URL tags, view URL reversals and JavaScript URL references to the new generated names before removing old routes. Do not change public job application or scheduled cron URLs as part of this migration. Verify HTTP methods against the existing views and preserve UUID converters.
+Before removing an old route:
 
-## Common checklist
+- Update every template `{% url %}` tag, `reverse()` call and JavaScript URL that referenced it.
+- Check that HTTP methods match what the view expects. Endpoints default to `POST` only.
+- Preserve URL converters (for example `<uuid:pk>`).
+- Set an explicit `permission=` on every endpoint that changes data. An endpoint with no permission is available to any user who can open its page.
 
-- Add package and mixin imports; keep original models, migrations and business logic.
-- Confirm existing project URL namespaces with `reverse()`.
-- Test authorized and unauthorized users, direct endpoint requests, CSRF, and all existing CRUD and publishing operations.
-- Test original navigation, styling, language and timezone behavior.
-- Run collectstatic and restart after deployment.
+## Object-scope pages
+
+For a button that acts on one saved record, use `scope="object"`. The button appears on the change form, not on the add form or changelist. Your view or template receives `request.fdg_management_object` and `management_object`.
+
+## Do not change
+
+Leave these alone during a migration:
+
+- Public-facing URLs and scheduled or cron endpoints.
+- Existing authorization logic that lives in your views.
+- Models, migrations and business logic.
+
+## Checklist
+
+- [ ] The mixin comes before `admin.ModelAdmin` in the class bases.
+- [ ] `reverse()` confirms the real URL names and namespaces in your project.
+- [ ] Authorized and unauthorized users were tested, including direct requests to every endpoint.
+- [ ] CSRF behavior was tested (a missing token should return 403).
+- [ ] All existing create, edit, delete and publish operations still work.
+- [ ] Original navigation, styling, language and time zone behavior are unchanged.
+- [ ] `collectstatic` was run and the server restarted after deployment.
