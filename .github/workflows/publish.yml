@@ -1,0 +1,21 @@
+name: Publish to PyPI
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: pip install . build twine
+      - run: python example_project/manage.py test demo
+      - run: python -c 'import importlib.metadata as m; from packaging.version import Version; assert not Version(m.version("django-admin-management-fdg")).is_prerelease, "Release candidates cannot be published by this workflow"'
+      - run: python -m build
+      - run: python -m twine check dist/*
+      - uses: pypa/gh-action-pypi-publish@release/v1

@@ -1,0 +1,50 @@
+{% extends 'django_admin_management_fdg/base.html' %}
+{% load static management_tags %}
+
+{% block management_content %}
+    <h1>{{ management_object.title }}</h1>
+
+    <div class="fdg-dashboard">
+        {% include 'django_admin_management_fdg/components/metric.html' with label='Published' value=management_object.published|yesno:'Yes,No' only %}
+    </div>
+
+    {% if management_page.name == 'item_details' and perms.demo.change_item %}
+        {% management_endpoint_url 'publish' as publish_url %}
+
+        <form id="publish-object" action="{{ publish_url }}" method="post">
+            {% csrf_token %}
+            <button type="submit">Publish this item</button>
+        </form>
+
+        <p id="publish-status" role="status"></p>
+
+        <script type="module">
+            import {
+                apiFetch,
+                setLoading,
+                showStatus
+            } from "{% static 'django_admin_management_fdg/api.js' %}";
+
+            const form = document.querySelector('#publish-object');
+
+            form.addEventListener('submit', async event => {
+                event.preventDefault();
+
+                const button = form.querySelector('button');
+                setLoading(button, true);
+
+                try {
+                    await apiFetch(form.action, { method: 'POST' });
+                    showStatus(
+                        document.querySelector('#publish-status'),
+                        'Published. Reload to refresh status.'
+                    );
+                } catch (error) {
+                    showStatus(document.querySelector('#publish-status'), error.message);
+                } finally {
+                    setLoading(button, false);
+                }
+            });
+        </script>
+    {% endif %}
+{% endblock %}

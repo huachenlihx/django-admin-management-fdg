@@ -1,0 +1,104 @@
+{% extends 'django_admin_management_fdg/base.html' %}
+{% load static management_tags %}
+
+{% block management_content %}
+    <h1>Manage items</h1>
+
+    <form id="create" data-url="{% management_endpoint_url 'create' %}">
+        {% csrf_token %}
+        <label for="title">Title</label>
+        <input id="title" name="title" required maxlength="150">
+        <button type="submit">Create</button>
+    </form>
+
+    <p>
+        <button
+            type="button"
+            data-url="{% management_endpoint_url 'run_job' %}"
+            data-method="POST"
+        >Run publishing job</button>
+    </p>
+
+    <p id="status" role="status" class="fdg-status"></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Published</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+                <tr>
+                    <td>{{ item.title }}</td>
+                    <td>{{ item.published|yesno:'Yes,No' }}</td>
+                    <td>
+                        <button
+                            type="button"
+                            data-url="{% management_endpoint_url 'publish' pk=item.pk %}"
+                            data-method="PATCH"
+                        >Publish</button>
+                        <button
+                            type="button"
+                            data-url="{% management_endpoint_url 'delete' pk=item.pk %}"
+                            data-method="DELETE"
+                        >Delete</button>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">No items yet.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script type="module">
+        import {
+            apiFetch,
+            setLoading,
+            showStatus,
+            confirmAction
+        } from "{% static 'django_admin_management_fdg/api.js' %}";
+
+        const status = document.getElementById('status');
+
+        async function execute(button, url, options) {
+            setLoading(button, true);
+
+            try {
+                await apiFetch(url, options);
+                window.location.reload();
+            } catch (error) {
+                showStatus(status, error.message);
+            } finally {
+                setLoading(button, false);
+            }
+        }
+
+        const form = document.getElementById('create');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+
+            execute(form.querySelector('button'), form.dataset.url, {
+                method: 'POST',
+                body: new FormData(form)
+            });
+        });
+
+        document.querySelectorAll('button[data-url]').forEach(button => {
+            button.addEventListener('click', () => {
+                if (button.dataset.method === 'DELETE' && !confirmAction('Delete this item?')) {
+                    return;
+                }
+
+                execute(button, button.dataset.url, {
+                    method: button.dataset.method
+                });
+            });
+        });
+    </script>
+{% endblock %}

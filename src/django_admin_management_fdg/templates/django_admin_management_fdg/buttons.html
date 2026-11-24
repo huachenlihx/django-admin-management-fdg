@@ -1,0 +1,24 @@
+{% load static %}
+
+{% for button in fdg_management_buttons %}
+    <li>
+        <a
+            href="{{ button.url }}"
+            {% if button.page.tooltip %}
+                title="{{ button.page.tooltip }}"
+            {% endif %}
+            {% if button.page.confirmation %}
+                data-fdg-confirm="{{ button.page.confirmation }}"
+            {% endif %}
+            style="{% if button.page.color %}background-color:{{ button.page.color }};{% endif %}{% if button.page.text_color %}color:{{ button.page.text_color }};{% endif %}{% if button.page.button_style == 'square' %}border-radius:0;{% elif button.page.button_style == 'rounded' %}border-radius:5px;{% endif %}"
+        >
+            {% if button.page.group %}{{ button.page.group }} · {% endif %}{% if button.page.icon %}<span aria-hidden="true">{{ button.page.icon }}</span> {% endif %}{{ button.page.label }}
+        </a>
+    </li>
+{% endfor %}
+
+{% if fdg_management_buttons %}
+    <li hidden>
+        <script defer src="{% static 'django_admin_management_fdg/confirm.js' %}"></script>
+    </li>
+{% endif %}

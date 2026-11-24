@@ -1,0 +1,7 @@
+.fdg-management-nav { display: flex; flex-wrap: wrap; gap: .75rem; margin: 0 0 1.5rem; }
+.fdg-management-nav a.button { display: inline-block; padding: .65rem 1rem; }
+.fdg-status { margin: 1rem 0; white-space: pre-wrap; }
+.fdg-dashboard {display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:1rem 0}
+.fdg-metric {border:1px solid var(--border-color);background:var(--body-bg);padding:1rem;border-radius:6px}
+.fdg-metric-value {font-size:2rem;margin:.5rem 0}
+.fdg-management-nav a[aria-current=page] {font-weight:bold;text-decoration:underline}

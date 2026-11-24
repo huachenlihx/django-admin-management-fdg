@@ -1,0 +1,6 @@
+{% extends fdg_management_changeform_base|default:"admin/change_form.html" %}
+
+{% block object-tools-items %}
+    {% include "django_admin_management_fdg/buttons.html" %}
+    {{ block.super }}
+{% endblock %}

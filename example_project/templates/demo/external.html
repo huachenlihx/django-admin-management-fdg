@@ -1,0 +1,68 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">
+            {% translate "Home" %}
+        </a>
+        &rsaquo;
+
+        <a href="{% url 'admin:app_list' app_label='demo' %}">
+            Demo
+        </a>
+        &rsaquo;
+
+        <a href="{% url 'admin:demo_item_changelist' %}">
+            Items
+        </a>
+        &rsaquo;
+
+        Existing Page
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <div style="display: flex; gap: 10px; margin-bottom: 24px;">
+        <a class="button"
+           href="{% url 'admin:demo_item_changelist' %}">
+            &larr; Back to items
+        </a>
+
+        <a class="button"
+           href="{% url 'admin:index' %}">
+            Admin home
+        </a>
+    </div>
+
+    <div class="module">
+        <h2>Existing URL Integration</h2>
+
+        <div style="padding: 20px;">
+
+            <p>
+                This page demonstrates how to connect
+                an existing Django view to a custom
+                Django Admin management button.
+            </p>
+
+            <p>
+                Authentication and permission checks
+                are enabled.
+            </p>
+
+            <h3>Configuration</h3>
+
+            <pre>ManagementPage(
+    name="external",
+    label="Existing Page",
+    scope="model",
+    url_name="demo_external",
+    permission="demo.view_item",
+)</pre>
+
+        </div>
+    </div>
+
+{% endblock %}

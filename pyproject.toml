@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-admin-management-fdg"
+version = "1.0.0"
+description = "Reusable custom management pages and buttons for Django Admin"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{name = "Founder Design Group"}]
+dependencies = ["Django>=5.2"]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Django",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/huachenlihx/django-admin-management-fdg"
+Repository = "https://github.com/huachenlihx/django-admin-management-fdg"
+Documentation = "https://github.com/huachenlihx/django-admin-management-fdg#readme"
+Issues = "https://github.com/huachenlihx/django-admin-management-fdg/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+django_admin_management_fdg = [
+    "templates/**/*.html",
+    "static/**/*.css",
+    "static/**/*.js",
+]

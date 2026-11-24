@@ -1,0 +1,6 @@
+include README.md LICENSE CHANGELOG.md MIGRATION_GUIDE.md VALIDATION.md
+recursive-include src/django_admin_management_fdg/templates *.html
+recursive-include src/django_admin_management_fdg/static *.css *.js
+recursive-include example_project *.py *.html
+
+recursive-include docs *.md *.png
