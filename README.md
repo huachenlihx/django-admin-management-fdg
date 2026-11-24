@@ -1,18 +1,24 @@
 # Django Admin Management FDG
 
-Version **1.0.0**. Add model-level and object-specific management buttons, custom pages and protected endpoints to Django Admin, without database migrations or a DRF dependency. Requires Python 3.10+ and Django 5.2 or newer, with no upper Django dependency limit. Newer Django releases are permitted by the installer, not automatically certified compatible. The bundled tests pass on Django 5.2.19 with Python 3.13; see VALIDATION.md for the remaining compatibility checks.
+Version **1.0.1**. Add model-level and object-specific management buttons, custom pages and protected endpoints to Django Admin, without database migrations or a DRF dependency. Requires Python 3.10+ and Django 5.2 or newer, with no upper Django dependency limit. Newer Django releases are permitted by the installer, not automatically certified compatible. The bundled tests pass on Django 5.2.19 with Python 3.13; see [VALIDATION.md](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/VALIDATION.md) for the remaining compatibility checks.
 
 ## Documentation
 
-- [Understanding model and object scopes (illustrated guide)](docs/scope-guide/SCOPE_GUIDE.md)
-- [Testing in a separate Django project](docs/PRE_PUBLISH_TEST_GUIDE.md)
-- [Migration guide](MIGRATION_GUIDE.md)
-- [Validation results and limitations](VALIDATION.md)
-- [MIT License](LICENSE)
+- [Understanding model and object scopes (illustrated guide)](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/docs/scope-guide/SCOPE_GUIDE.md)
+- [Testing in a separate Django project](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/docs/PRE_PUBLISH_TEST_GUIDE.md)
+- [Migration guide](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/MIGRATION_GUIDE.md)
+- [Validation results and limitations](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/VALIDATION.md)
+- [MIT License](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/LICENSE)
 
 ## Install
 
-Once published: `pip install django-admin-management-fdg`. From this source checkout: `python -m pip install -e .`.
+Install from [PyPI](https://pypi.org/project/django-admin-management-fdg/):
+
+```bash
+pip install django-admin-management-fdg
+```
+
+From this source checkout: `python -m pip install -e .`.
 
 Add `django_admin_management_fdg` to `INSTALLED_APPS`. Keep the usual Django admin apps, session/authentication/CSRF/messages middleware and template context processors. Set `APP_DIRS=True` and `DIRS=[BASE_DIR / "templates"]` in the Django template backend to use project-level templates. No package migrations or root URL changes are needed for internally registered routes.
 
@@ -48,7 +54,7 @@ The package places buttons next to the standard Add button. Generated routes fol
 
 ## Built-in templates and how to use them
 
-The package ships six reusable Django templates. They are installed with the package; you do not need to copy them into your project to use them. Keep `APP_DIRS=True` and configure your project template directory as described in [Install](#install).
+The package ships six reusable Django templates. They are installed with the package; you do not need to copy them into your project to use them. Keep `APP_DIRS=True` and configure your project template directory as described in [Install](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/README.md#install).
 
 ```text
 django_admin_management_fdg/templates/
@@ -380,9 +386,9 @@ python -m twine upload --repository testpypi dist/*
 python -m twine upload dist/*
 ```
 
-The manual GitHub publishing workflow uses PyPI Trusted Publishing; configure the matching repository, workflow and `pypi` environment in PyPI first. Never commit API tokens. Review the license and author metadata before publishing. No publishing has been performed.
+The manual GitHub publishing workflow uses PyPI Trusted Publishing; configure the matching repository, workflow and `pypi` environment in PyPI first. Never commit API tokens. Review the license and author metadata before publishing.
 
-See `MIGRATION_GUIDE.md` for the three motivating applications.
+See [MIGRATION_GUIDE.md](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/MIGRATION_GUIDE.md) for the three motivating applications.
 
 ## Extended functionality in 1.0
 
@@ -453,8 +459,8 @@ and Preview buttons for a working integration example to test locally.
 
 ### Release verification
 
-Version `1.0.0` is the first stable-version release, following the maintainer's local testing. See [validation results](VALIDATION.md) for independently executed checks and remaining limitations. Before upload, run the CI matrix for Django 5.2, 6.0 and 6.1, verify browser behavior and staging integrations, and run `python -m twine check dist/*`. The manual publish workflow intentionally blocks prerelease versions.
+Version `1.0.0` was the first stable release, following the maintainer's local testing. Version `1.0.1` is a documentation-only patch release that fixes documentation and license links for PyPI. See [validation results](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/VALIDATION.md) for independently executed checks and remaining limitations. Before upload, run the CI matrix for Django 5.2, 6.0 and 6.1, verify browser behavior and staging integrations, and run `python -m twine check dist/*`. The manual publish workflow intentionally blocks prerelease versions.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/LICENSE) file for details.

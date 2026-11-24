@@ -1,8 +1,23 @@
 # Changelog
 
+## 1.0.1
+
+Documentation-only patch release.
+
+### Fixed
+
+- Replaced relative documentation and license links in README.md with absolute GitHub URLs so they resolve correctly on both GitHub and PyPI.
+
+### Changed
+
+- Updated installation instructions to reflect the package's availability on PyPI.
+- Updated README version and release information for 1.0.1.
+
+No runtime functionality, public API, or dependency requirements have changed.
+
 ## 1.0.0
 
-First intended public stable release; consolidates the earlier development versions.
+First public stable release; consolidates the earlier development versions.
 
 - Declarative model-level and object-specific buttons, protected management pages and endpoints.
 - Template, custom callable and existing named URL modes (existing URLs are model-scoped only).
