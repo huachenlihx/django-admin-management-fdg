@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/LICENSE)
 [![PyPI downloads](https://img.shields.io/pypi/dm/django-admin-management-fdg)](https://pypistats.org/packages/django-admin-management-fdg)
 
-Version **1.0.2**. Add model-level and object-specific management buttons, custom pages and protected endpoints to Django Admin, without database migrations or a DRF dependency. Requires Python 3.10+ and Django 5.2 or newer. The bundled tests pass on Django 5.2, 6.0 and 6.1; see [VALIDATION.md](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/VALIDATION.md) for exact versions and remaining checks. Django has no upper version bound, so releases newer than those listed are permitted by the installer but not certified.
+Version **1.0.3**. Add model-level and object-specific management buttons, custom pages and protected endpoints to Django Admin, without database migrations or a DRF dependency. Requires Python 3.10+ and Django 5.2 or newer. The bundled tests pass on Django 5.2, 6.0 and 6.1; see [VALIDATION.md](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/VALIDATION.md) for exact versions and remaining checks. Django has no upper version bound, so releases newer than those listed are permitted by the installer but not certified.
 
 ## Features
 
@@ -486,6 +486,14 @@ and Preview buttons for a working integration example to test locally.
 
 Version `1.0.1` is a documentation-only patch release on top of `1.0.0`. See [VALIDATION.md](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/VALIDATION.md) for the checks that have been run and those still outstanding. Before each release, run the CI matrix, then run `python -m twine check dist/*`. The manual publish workflow blocks prerelease versions.
 
-## License
+## Project links
+
+- GitHub repository: https://github.com/huachenlihx/django-admin-management-fdg
+- Issues: https://github.com/huachenlihx/django-admin-management-fdg/issues
+- PyPI project: https://pypi.org/project/django-admin-management-fdg/
+
+## License and contact
 
 This project is licensed under the MIT License. See the [LICENSE](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/LICENSE) file for details.
+
+Email: `huachenlihx@gmail.com`

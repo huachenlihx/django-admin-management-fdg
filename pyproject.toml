@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "django-admin-management-fdg"
-version = "1.0.2"
+version = "1.0.3"
 description = "Reusable custom management pages and buttons for Django Admin"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
-authors = [{name = "Founder Design Group"}]
+authors = [{name = "Hua Chen"}]
 dependencies = ["Django>=5.2"]
 
 classifiers = [
