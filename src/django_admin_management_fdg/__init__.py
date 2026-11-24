@@ -1,6 +1,6 @@
 from .config import ManagementEndpoint, ManagementPage
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __all__ = ["ManagementPage", "ManagementEndpoint", "ManagementAdminMixin"]
 
 

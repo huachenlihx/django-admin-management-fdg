@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.2
+
+### Changed
+
+- Updated README.md only.
+
+No runtime functionality, public API, or dependency requirements have changed.
+
+Documentation-only patch release.
+
 ## 1.0.1
 
 Documentation-only patch release.
