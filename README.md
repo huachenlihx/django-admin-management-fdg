@@ -1,6 +1,28 @@
 # Django Admin Management FDG
 
-Version **1.0.1**. Add model-level and object-specific management buttons, custom pages and protected endpoints to Django Admin, without database migrations or a DRF dependency. Requires Python 3.10+ and Django 5.2 or newer, with no upper Django dependency limit. Newer Django releases are permitted by the installer, not automatically certified compatible. The bundled tests pass on Django 5.2.19 with Python 3.13; see [VALIDATION.md](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/VALIDATION.md) for the remaining compatibility checks.
+[![PyPI version](https://img.shields.io/pypi/v/django-admin-management-fdg)](https://pypi.org/project/django-admin-management-fdg/)
+[![Python versions](https://img.shields.io/pypi/pyversions/django-admin-management-fdg)](https://pypi.org/project/django-admin-management-fdg/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/LICENSE)
+[![PyPI downloads](https://img.shields.io/pypi/dm/django-admin-management-fdg)](https://pypi.org/project/django-admin-management-fdg/)
+
+Version **1.0.1**. Add model-level and object-specific management buttons, custom pages and protected endpoints to Django Admin, without database migrations or a DRF dependency. Requires Python 3.10+ and Django 5.2 or newer. The bundled tests pass on Django 5.2, 6.0 and 6.1; see [VALIDATION.md](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/VALIDATION.md) for exact versions and remaining checks. Django has no upper version bound, so releases newer than those listed are permitted by the installer but not certified.
+
+## Features
+
+- Multiple custom management buttons per Django Admin model.
+- Model-level and object-specific management pages.
+- Automatic URL registration and Admin navigation.
+- Support for custom templates, Django views, and existing named URLs.
+- Permission-protected API endpoints with CSRF protection.
+- Configurable button labels, icons, colors, styles, and ordering.
+- Grouped management navigation and optional confirmation dialogs.
+- Reusable JavaScript utilities for AJAX requests and status messages.
+- Reusable dashboard metric and panel components.
+- Optional endpoint audit logging.
+- Support for custom AdminSite instances and URL prefixes.
+- Django Admin light and dark theme integration.
+- No additional database models or migrations.
+- No Django REST Framework dependency.
 
 ## Documentation
 
@@ -347,6 +369,8 @@ For a parameterized route use `{% management_endpoint_url 'edit' pk=object.pk %}
 
 Internally registered pages and endpoints require the AdminSite's permission (active staff by default), model view or change permission, and the optional page permission. Endpoints additionally enforce their own optional permission and HTTP method allowlist. CSRF is enforced even when a supplied callable declares itself exempt. Admin routes use the AdminSite wrapper and are not cached by default. Do not use GET for mutations. The package does not decide custom object-level authorization, input validation, rate limits, transaction boundaries, durable audit retention, or business rules: these belong in your application. Never pass cron credentials to browser JavaScript. Use protected POST endpoints that call server-side publishing services or management commands. Avoid exposing duplicate unprotected routes.
 
+An endpoint with no `permission=` is available to every user who can open its page (staff access plus model view or change permission). Set an explicit `permission` on every endpoint that creates, changes or deletes data.
+
 To customize permission policy, override `has_management_permission(request, page, obj=None)` carefully, retaining staff and model authorization unless you have a deliberate alternative. Buttons and internal routes use this same hook. Existing named URLs remain independently protected.
 
 ## Existing admin templates / branding
@@ -388,7 +412,7 @@ python -m twine upload dist/*
 
 The manual GitHub publishing workflow uses PyPI Trusted Publishing; configure the matching repository, workflow and `pypi` environment in PyPI first. Never commit API tokens. Review the license and author metadata before publishing.
 
-See [MIGRATION_GUIDE.md](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/MIGRATION_GUIDE.md) for the three motivating applications.
+See [MIGRATION_GUIDE.md](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/MIGRATION_GUIDE.md) for how to move an existing Admin button, custom page or set of AJAX routes onto this package.
 
 ## Extended functionality in 1.0
 
@@ -459,7 +483,7 @@ and Preview buttons for a working integration example to test locally.
 
 ### Release verification
 
-Version `1.0.0` was the first stable release, following the maintainer's local testing. Version `1.0.1` is a documentation-only patch release that fixes documentation and license links for PyPI. See [validation results](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/VALIDATION.md) for independently executed checks and remaining limitations. Before upload, run the CI matrix for Django 5.2, 6.0 and 6.1, verify browser behavior and staging integrations, and run `python -m twine check dist/*`. The manual publish workflow intentionally blocks prerelease versions.
+Version `1.0.1` is a documentation-only patch release on top of `1.0.0`. See [VALIDATION.md](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/VALIDATION.md) for the checks that have been run and those still outstanding. Before each release, run the CI matrix, then run `python -m twine check dist/*`. The manual publish workflow blocks prerelease versions.
 
 ## License
 
