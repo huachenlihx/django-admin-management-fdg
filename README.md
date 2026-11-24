@@ -1,9 +1,10 @@
 # Django Admin Management FDG
 
 [![PyPI version](https://img.shields.io/pypi/v/django-admin-management-fdg)](https://pypi.org/project/django-admin-management-fdg/)
-[![Python versions](https://img.shields.io/pypi/pyversions/django-admin-management-fdg)](https://pypi.org/project/django-admin-management-fdg/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://pypi.org/project/django-admin-management-fdg/)
+[![Django 5.2+](https://img.shields.io/badge/Django-5.2%2B-092E20)](https://www.djangoproject.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/LICENSE)
-[![PyPI downloads](https://img.shields.io/pypi/dm/django-admin-management-fdg)](https://pypi.org/project/django-admin-management-fdg/)
+[![PyPI downloads](https://img.shields.io/pypi/dm/django-admin-management-fdg)](https://pypistats.org/packages/django-admin-management-fdg)
 
 Version **1.0.2**. Add model-level and object-specific management buttons, custom pages and protected endpoints to Django Admin, without database migrations or a DRF dependency. Requires Python 3.10+ and Django 5.2 or newer. The bundled tests pass on Django 5.2, 6.0 and 6.1; see [VALIDATION.md](https://github.com/huachenlihx/django-admin-management-fdg/blob/main/VALIDATION.md) for exact versions and remaining checks. Django has no upper version bound, so releases newer than those listed are permitted by the installer but not certified.
 
